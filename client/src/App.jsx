@@ -37,7 +37,15 @@ import { Loader } from "lucide-react";
 const App = () => {
 
   return (
-    <></>
+    <BrowserRouter>
+    <Routes>
+      {/* Auth Routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+    </Routes>
+    
+    </BrowserRouter>
   );
 };
 

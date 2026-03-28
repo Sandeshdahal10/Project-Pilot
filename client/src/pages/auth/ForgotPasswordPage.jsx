@@ -95,7 +95,7 @@ const ForgotPasswordPage = () => {
               password.
             </p>
           </div>
-          {/* Login Form */}
+          {/* Forgot Password Form */}
           <div className="card">
             <form onSubmit={handleSubmit} className="space-y-6">
               {error.general && (
@@ -138,6 +138,11 @@ const ForgotPasswordPage = () => {
                 )}
               </button>
             </form>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-slate-600">
+                Remember your password?{" "} <Link to={"/login"} className="text-blue-600 hover:text-blue-500 font-medium ">Sign in</Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -33,6 +33,7 @@ import ProjectsPage from "./pages/admin/ProjectsPage";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import { Loader } from "lucide-react";
+import { getUser } from "./store/slices/authSlice";
 
 const App = () => {
   const {authUser, isCheckingAuth} = useSelector(state => state.auth);

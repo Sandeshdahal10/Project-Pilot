@@ -52,7 +52,7 @@ const ResetPasswordPage = () => {
           token,
           password: formData.password,
           confirmPassword: formData.confirmPassword,
-        }).unwrap());
+        })).unwrap();
         navigate("/login");
       } catch (error) {
         setErrors({ general: error ||"Failed to reset password. Please try again." });

@@ -33,6 +33,14 @@ export const resetPassword = createAsyncThunk("resetPassword",async({token,passw
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 })
+export const getUser = createAsyncThunk("getUser",async(_, thunkAPI) => {
+  try {
+    const res = await axiosInstance.get('auth/me');
+    return res.data.user;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data.message || "Failed to fetch user data. Please try again.");
+  }
+})
 
 const authSlice = createSlice({
   name: "auth",

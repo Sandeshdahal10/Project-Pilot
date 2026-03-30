@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios";
 import { toast } from "react-toastify";
 
-export const login = createAsyncThunk("login",async(data, thunkAPI) => {
+export const login = createAsyncThunk("login", async (data, thunkAPI) => {
   try {
     const res = await axiosInstance.post("/auth/login", data);
     toast.success(res.data.message);
@@ -11,45 +11,64 @@ export const login = createAsyncThunk("login",async(data, thunkAPI) => {
     toast.error(error.response.data.message);
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
-})
+});
 
-export const forgotPassword = createAsyncThunk("forgotPassword",async(email, thunkAPI) => {
+export const forgotPassword = createAsyncThunk(
+  "forgotPassword",
+  async (email, thunkAPI) => {
+    try {
+      const res = await axiosInstance.post("/auth/forgotpassword", email);
+      toast.success(res.data.message);
+      return null;
+    } catch (error) {
+      toast.error(error.response.data.message);
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
+export const resetPassword = createAsyncThunk(
+  "resetPassword",
+  async ({ token, password, confirmPassword }, thunkAPI) => {
+    try {
+      const res = await axiosInstance.put(`/resetpassword/${token}`, {
+        password,
+        confirmPassword,
+      });
+      toast.success(res.data.message);
+      return res.data.user;
+    } catch (error) {
+      toast.error(
+        error.response.data.message ||
+          "Failed to reset password. Please try again.",
+      );
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
+export const getUser = createAsyncThunk("getUser", async (_, thunkAPI) => {
   try {
-    const res = await axiosInstance.post("/auth/forgotpassword",  email );
-    toast.success(res.data.message);
-    return null;
-  } catch (error) {
-    toast.error(error.response.data.message);
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-})
-export const resetPassword = createAsyncThunk("resetPassword",async({token,password,confirmPassword}, thunkAPI) => {
-  try {
-    const res = await axiosInstance.put(`/resetpassword/${token}`, { password, confirmPassword });
-    toast.success(res.data.message);
+    const res = await axiosInstance.get("auth/me");
     return res.data.user;
   } catch (error) {
-    toast.error(error.response.data.message || "Failed to reset password. Please try again.");
-    return thunkAPI.rejectWithValue(error.response.data.message);
+    return thunkAPI.rejectWithValue(
+      error.response.data.message ||
+        "Failed to fetch user data. Please try again.",
+    );
   }
-})
-export const getUser = createAsyncThunk("getUser",async(_, thunkAPI) => {
+});
+export const logout = createAsyncThunk("logout", async (_, thunkAPI) => {
   try {
-    const res = await axiosInstance.get('auth/me');
-    return res.data.user;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message || "Failed to fetch user data. Please try again.");
-  }
-})
-export const logout = createAsyncThunk("logout",async(_, thunkAPI) => {
-  try {
-    const res = await axiosInstance.post('auth/logout');
+    const res = await axiosInstance.post("auth/logout");
     return null;
   } catch (error) {
-    toast.error(error.response.data.message || "Failed to logout. Please try again.");
-    return thunkAPI.rejectWithValue(error.response.data.message || "Failed to logout. Please try again.");
+    toast.error(
+      error.response.data.message || "Failed to logout. Please try again.",
+    );
+    return thunkAPI.rejectWithValue(
+      error.response.data.message || "Failed to logout. Please try again.",
+    );
   }
-})
+});
 
 const authSlice = createSlice({
   name: "auth",
@@ -63,14 +82,55 @@ const authSlice = createSlice({
     isCheckingAuth: true,
   },
   extraReducers: (builder) => {
-    builder.addCase(login.pending, (state)=>{
-      state.isLoggingIn = true;
-    }).addCase(login.fulfilled, (state, action)=>{
-      state.isLoggingIn = false;
-      state.authUser = action.payload;
-    }).addCase(login.rejected, (state)=>{
-      state.isLoggingIn = false;
-    });
+    builder
+      .addCase(login.pending, (state) => {
+        state.isLoggingIn = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoggingIn = false;
+        state.authUser = action.payload;
+      })
+      .addCase(login.rejected, (state) => {
+        state.isLoggingIn = false;
+      });
+    builder
+      .addCase(getUser.pending, (state) => {
+        state.isCheckingAuth = true;
+        state.authUser = null;
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.isCheckingAuth = false;
+        state.authUser = action.payload;
+      })
+      .addCase(getUser.rejected, (state) => {
+        state.isCheckingAuth = false;
+        state.authUser = null;
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.authUser = null;
+      })
+      .addCase(logout.rejected, (state) => {
+        state.authUser = state.authUser;
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.isRequestingForToken = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.isRequestingForToken = false;
+      })
+      .addCase(forgotPassword.rejected, (state) => {
+        state.isRequestingForToken = false;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.isUpdatingPassword = true;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.isUpdatingPassword = false;
+        state.authUser = action.payload;
+      })
+      .addCase(resetPassword.rejected, (state) => {
+        state.isUpdatingPassword = false;
+      });
   },
 });
 

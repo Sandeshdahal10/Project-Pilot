@@ -41,6 +41,15 @@ export const getUser = createAsyncThunk("getUser",async(_, thunkAPI) => {
     return thunkAPI.rejectWithValue(error.response.data.message || "Failed to fetch user data. Please try again.");
   }
 })
+export const logout = createAsyncThunk("logout",async(_, thunkAPI) => {
+  try {
+    const res = await axiosInstance.post('auth/logout');
+    return null;
+  } catch (error) {
+    toast.error(error.response.data.message || "Failed to logout. Please try again.");
+    return thunkAPI.rejectWithValue(error.response.data.message || "Failed to logout. Please try again.");
+  }
+})
 
 const authSlice = createSlice({
   name: "auth",

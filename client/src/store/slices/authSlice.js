@@ -4,14 +4,33 @@ import { toast } from "react-toastify";
 
 export const login = createAsyncThunk("login",async(data, thunkAPI) => {
   try {
-    const res = await axiosInstance.post("/auth/login", data, {
-      headers: {"Content-Type": "application/json"}
-    });
+    const res = await axiosInstance.post("/auth/login", data);
     toast.success(res.data.message);
     return res.data.user;
   } catch (error) {
     toast.error(error.response.data.message);
-    return thunkAPI.rejectWithValue(error.response.data);
+    return thunkAPI.rejectWithValue(error.response.data.message);
+  }
+})
+
+export const forgotPassword = createAsyncThunk("forgotPassword",async(email, thunkAPI) => {
+  try {
+    const res = await axiosInstance.post("/auth/forgotpassword",  email );
+    toast.success(res.data.message);
+    return null;
+  } catch (error) {
+    toast.error(error.response.data.message);
+    return thunkAPI.rejectWithValue(error.response.data.message);
+  }
+})
+export const resetPassword = createAsyncThunk("resetPassword",async({token,password,confirmPassword}, thunkAPI) => {
+  try {
+    const res = await axiosInstance.put(`/resetpassword/${token}`, { password, confirmPassword });
+    toast.success(res.data.message);
+    return res.data.user;
+  } catch (error) {
+    toast.error(error.response.data.message || "Failed to reset password. Please try again.");
+    return thunkAPI.rejectWithValue(error.response.data.message);
   }
 })
 

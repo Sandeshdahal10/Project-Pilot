@@ -17,7 +17,7 @@ const ForgotPasswordPage = () => {
       return;
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError = "Email is invalid";
+      setError("Email is invalid");
       return;
     }
     setError("");
@@ -47,13 +47,14 @@ const ForgotPasswordPage = () => {
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
+              </div>
               <h1 className="text-2xl font-bold text-slate-800">
                 Check your email
               </h1>
               <p className="text-slate-600">
                 We've sent a password reset link to your email address.
               </p>
-            </div>
+            
             <div className="card">
               <div className="text-center">
                 <p className="text-slate-700 mb-4">

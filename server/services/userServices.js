@@ -10,12 +10,31 @@ export const createUser = async (userData) => {
 };
 export const updateUser = async (id, updateData) => {
   try {
-    const user = await User.findByIdAndUpdate(id, updateData, {
+    return await User.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     }).select("-password");
-    return user;
   } catch (error) {
     throw new Error("Error updating user: " + error.message);
+  }
+};
+
+export const getUserById = async (id) => {
+  try {
+    return await User.findById(id).select("-password, -resetPasswordToken, -resetPasswordExpire");
+  } catch (error) {
+    throw new Error("Error fetching user: " + error.message);
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return await user.deleteOne();
+  } catch (error) {
+    throw new Error("Error deleting user: " + error.message);
   }
 };

@@ -39,3 +39,18 @@ export const updateStudent = asyncHandler(async (req,res,next) => {
     });
 })
 
+export const deleteStudent = asyncHandler(async (req,res,next) => {
+    const {id} = req.params;
+    const user = await userServices.getUserById(id);
+    if(!user){
+        return next(new Errorhandler("Student not found",404));
+    }
+    if(user.role !== "Student"){
+        return next(new Errorhandler("User is not a student",400));
+    }
+    await userServices.deleteUser(id);
+    res.status(200).json({
+        success: true,
+        message: "Student deleted successfully",
+    });
+})

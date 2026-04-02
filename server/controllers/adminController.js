@@ -76,3 +76,19 @@ export const createTeacher = asyncHandler(async (req,res,next) => {
         user,
     });
 });
+
+export const updateTeacher = asyncHandler(async (req,res,next) => {
+    const {id} = req.params;
+    const updateData = {...req.body};
+    delete updateData.role; // Prevent role from being updated
+
+    const user = await userServices.updateUser(id, updateData);
+    if(!user){
+        return next(new Errorhandler("Teacher not found",404));
+    }
+    res.status(200).json({
+        success: true,
+        message: "Teacher updated successfully",
+        user,
+    });
+})

@@ -108,3 +108,12 @@ export const deleteTeacher = asyncHandler(async (req,res,next) => {
         message: "Teacher deleted successfully",
     });
 })
+
+export const getAllUsers = asyncHandler(async (req,res,next) => {
+    const {users} = await userServices.getAllUsers();
+    res.status(200).json({
+        success: true,
+        message: "Users retrieved successfully",
+        users,
+    });
+})

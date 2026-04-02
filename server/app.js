@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import errorMiddleware from "./middlewares/error.js";
 import authRouter from "./router/user.routes.js";
+import adminRouter from "./router/admin.routes.js";
 
 config();
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/admin", adminRouter);
 app.use(errorMiddleware);
 
 export default app;

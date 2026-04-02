@@ -41,7 +41,6 @@ export const deleteUser = async (id) => {
 
 export const getAllUsers = async () => {
   const query = {role: {$ne: "Admin"}}; // Exclude Admin users
-  const users = (await User.find(query).select("-password, -resetPasswordToken, -resetPasswordExpire")).sort({createdAt: -1});
-  const total = await User.countDocuments(query);
-  return users;
+  const users = await User.find(query).select("-password, -resetPasswordToken, -resetPasswordExpire").sort({createdAt: -1});
+  return {users};
 }

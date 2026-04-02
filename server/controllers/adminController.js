@@ -92,3 +92,19 @@ export const updateTeacher = asyncHandler(async (req,res,next) => {
         user,
     });
 })
+
+export const deleteTeacher = asyncHandler(async (req,res,next) => {
+    const {id} = req.params;
+    const user = await userServices.getUserById(id);
+    if(!user){
+        return next(new Errorhandler("Teacher not found",404));
+    }
+    if(user.role !== "Teacher"){
+        return next(new Errorhandler("User is not a teacher",400));
+    }
+    await userServices.deleteUser(id);
+    res.status(200).json({
+        success: true,
+        message: "Teacher deleted successfully",
+    });
+})

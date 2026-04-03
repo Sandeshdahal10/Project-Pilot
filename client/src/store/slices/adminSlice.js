@@ -32,6 +32,36 @@ export const deleteStudent = createAsyncThunk("deleteStudent", async(id, thunkAP
     return thunkAPI.rejectWithValue(error.response?.data?.message);
   }
 })
+export const createTeacher = createAsyncThunk("createTeacher", async(data, thunkAPI) => {
+  try {
+    const res = await axiosInstance.post("/admin/create-teacher",data);
+    toast.success(res.data.message || "Teacher created successfully");
+    return res.data.data.user;
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to create Teacher");
+    return thunkAPI.rejectWithValue(error.response?.data?.message);
+  }
+})
+export const updateTeacher = createAsyncThunk("updateTeacher", async({id,data}, thunkAPI) => {
+  try {
+    const res = await axiosInstance.put(`/admin/update-teacher/${id}`,data);
+    toast.success(res.data.message || "Teacher updated successfully");
+    return res.data.data.user;
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to update Teacher");
+    return thunkAPI.rejectWithValue(error.response?.data?.message);
+  }
+})
+export const deleteTeacher = createAsyncThunk("deleteTeacher", async(id, thunkAPI) => {
+  try {
+    const res = await axiosInstance.delete(`/admin/delete-teacher/${id}`);
+    toast.success(res.data.message || "Teacher deleted successfully");
+    return id;
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to delete Teacher");
+    return thunkAPI.rejectWithValue(error.response?.data?.message);
+  }
+})
 export const getAllUsers = createAsyncThunk("getAllUsers", async(id, thunkAPI) => {
   try {
     const res = await axiosInstance.get(`/admin/users`);
@@ -64,6 +94,17 @@ const adminSlice = createSlice({
       }
     })
     .addCase(deleteStudent.fulfilled, (state,action) => {
+      if(state.users) state.users = state.users.filter((u) => u._id !== action.payload);
+    })
+    .addCase(createTeacher.fulfilled, (state,action) => {
+      if(state.users) state.users.unshift(action.payload);
+    })
+    .addCase(updateTeacher.fulfilled, (state,action) => {
+      if(state.users) {
+        state.users = state.users.map(u => u._id === action.payload._id ? {...u, ...action.payload} : u)
+      }
+    })
+    .addCase(deleteTeacher.fulfilled, (state,action) => {
       if(state.users) state.users = state.users.filter((u) => u._id !== action.payload);
     })
     .addCase(getAllUsers.fulfilled, (state,action) => {

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios";
 import { toast } from "react-toastify";
 
@@ -54,7 +54,21 @@ const adminSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    
+    builder
+    .addCase(createStudent.fulfilled, (state,action) => {
+      if(state.users) state.users.unshift(action.payload);
+    })
+    .addCase(updateStudent.fulfilled, (state,action) => {
+      if(state.users) {
+        state.users = state.users.map(u => u._id === action.payload._id ? {...u, ...action.payload} : u)
+      }
+    })
+    .addCase(deleteStudent.fulfilled, (state,action) => {
+      if(state.users) state.users = state.users.filter((u) => u._id !== action.payload);
+    })
+    .addCase(getAllUsers.fulfilled, (state,action) => {
+      state.users = action.payload.users;
+    })
   },
 });
 

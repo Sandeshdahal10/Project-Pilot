@@ -60,7 +60,7 @@ export const getUser = createAsyncThunk("getUser", async (_, thunkAPI) => {
 });
 export const logout = createAsyncThunk("logout", async (_, thunkAPI) => {
   try {
-    const res = await axiosInstance.post("auth/logout");
+    const res = await axiosInstance.get("auth/logout");
     return null;
   } catch (error) {
     toast.error(

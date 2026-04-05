@@ -12,7 +12,7 @@ import { toggleStudentModal } from "../../store/slices/popupSlice";
 
 const ManageStudents = () => {
   const { users, projects } = useSelector((state) => state.admin);
-  const { isCreateStudentModalOpen } = useSelector(state.popup);
+  const { isCreateStudentModalOpen } = useSelector((state) => state.popup);
   const [showModal, setShowModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +27,9 @@ const ManageStudents = () => {
   });
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
   const students = useMemo(() => {
     const studentUsers = (users || []).filter(
       (u) => u.role?.toLowerCase() === "student",
@@ -44,14 +47,10 @@ const ManageStudents = () => {
     });
   }, [users, projects]);
 
-  useEffect(() => {
-    dispatch(getAllUsers());
-  });
-
   const departments = useMemo(() => {
-    const set = new Set(students || [])
-      .map((s) => s.department)
-      .filter(Boolean);
+    const set = new Set(
+      (students || []).map((s) => s.department).filter(Boolean),
+    );
     return Array.from(set);
   }, [students]);
 
@@ -170,19 +169,43 @@ const ManageStudents = () => {
               </div>
             </div>
           </div>
-           <div className="card">
+          <div className="card">
             <div className="flex items-center">
               <div className="p-3 bg-blue-100 rounded-lg">
                 <TriangleAlert className="w-6 h-6 text-yellow-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-slate-600">
-                  Unassigned
-                </p>
+                <p className="text-sm font-medium text-slate-600">Unassigned</p>
                 <p className="text-lg font-semibold text-slate-800">
                   {students.filter((s) => !s.isSupervisor).length}
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+        {/* Filters */}
+        <div className="card">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Search Student
+              </label>
+              <input
+                type="text"
+                placeholder="Search by Name or Email.."
+                className="input-field w-full"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="w-full md:w-48">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Filter Status</label>
+              <select className="input-field w-full" value={filterDepartment} onChange={(e)=> setFilterDepartment(e.target.value)}>
+                <option value="all">All Departments</option>
+                {departments.map(dept=>(
+                  <option value={dept} key={dept}>{dept}</option>
+                ))}
+              </select>
             </div>
           </div>
         </div>

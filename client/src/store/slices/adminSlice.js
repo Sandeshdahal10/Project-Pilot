@@ -65,7 +65,7 @@ export const deleteTeacher = createAsyncThunk("deleteTeacher", async(id, thunkAP
 export const getAllUsers = createAsyncThunk("getAllUsers", async(id, thunkAPI) => {
   try {
     const res = await axiosInstance.get(`/admin/users`);
-    return res.data.data;
+    return res.data;
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to retreived Users");
     return thunkAPI.rejectWithValue(error.response?.data?.message);

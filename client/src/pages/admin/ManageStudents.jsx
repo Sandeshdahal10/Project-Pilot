@@ -7,6 +7,8 @@ import {
   getAllUsers,
   updateStudent,
 } from "../../store/slices/adminSlice";
+import { CheckCircle, Plus, TriangleAlert, Users } from "lucide-react";
+import { toggleStudentModal } from "../../store/slices/popupSlice";
 
 const ManageStudents = () => {
   const { users, projects } = useSelector((state) => state.admin);
@@ -115,7 +117,78 @@ const ManageStudents = () => {
     setStudentToDelete(null);
   };
 
-  return <></>;
+  return (
+    <>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="card">
+          <div className="card-header flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div>
+              <h1 className="card-title">Manage Student</h1>
+              <p className="card-subtitle">
+                Add, Edit and Manage Students Accounts
+              </p>
+            </div>
+            <button
+              onClick={() => dispatch(toggleStudentModal())}
+              className="btn-primary flex items-center space-x-2 mt-4 md:mt-0"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add New Student</span>
+            </button>
+          </div>
+        </div>
+        {/* Stats card */}
+        <div className="grid grid-cols-1 md:grid-cols-3">
+          <div className="card">
+            <div className="flex items-center">
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <Users className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-slate-600">
+                  Total Students
+                </p>
+                <p className="text-lg font-semibold text-slate-800">
+                  {students.length}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <div className="flex items-center">
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <CheckCircle className="w-6 h-6 text-purple-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-slate-600">
+                  Completed Projects
+                </p>
+                <p className="text-lg font-semibold text-slate-800">
+                  {students.filter((s) => s.status === "completed").length}
+                </p>
+              </div>
+            </div>
+          </div>
+           <div className="card">
+            <div className="flex items-center">
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <TriangleAlert className="w-6 h-6 text-yellow-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-slate-600">
+                  Unassigned
+                </p>
+                <p className="text-lg font-semibold text-slate-800">
+                  {students.filter((s) => !s.isSupervisor).length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ManageStudents;

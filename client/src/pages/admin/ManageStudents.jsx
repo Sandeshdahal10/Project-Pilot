@@ -209,6 +209,57 @@ const ManageStudents = () => {
             </div>
           </div>
         </div>
+        {/* Students Table */}
+        <div className="card">
+          <div className="card-header">
+            <h2 className="card-title">Students List</h2>
+          </div>
+          <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Student Infor</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Department & Year</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Supervisor</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Project Title</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-slate-200">
+                    {
+                      filteredStudents.map(student=>{
+                        return(
+                          <tr key={student._id} className="hover:bg-slate-50">
+                            <td className="px-6 py-4">
+                              <div>
+                                <div className="text-sm font-medium text-slate-900">
+                                  {student.name}
+                                </div>
+                                <div className="text-sm text-slate-500">
+                                  {student.email}
+                                </div>
+                                {
+                                  student.studentId && (
+                                    <div className="text-xs text-slate-400">
+                                      ID: {student.studentId}
+                                    </div>
+                                  )
+                                }
+                              </div>
+                            </td>
+
+
+                            <td className="px-6 py-4 whitespace-nowrap">
+
+                            </td>
+                          </tr>
+                        )
+                      })
+                    }
+                  </tbody>
+                </table>
+          </div>
+        </div>
       </div>
     </>
   );

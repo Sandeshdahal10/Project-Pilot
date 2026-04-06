@@ -199,11 +199,19 @@ const ManageStudents = () => {
               />
             </div>
             <div className="w-full md:w-48">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Filter Status</label>
-              <select className="input-field w-full" value={filterDepartment} onChange={(e)=> setFilterDepartment(e.target.value)}>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Filter Status
+              </label>
+              <select
+                className="input-field w-full"
+                value={filterDepartment}
+                onChange={(e) => setFilterDepartment(e.target.value)}
+              >
                 <option value="all">All Departments</option>
-                {departments.map(dept=>(
-                  <option value={dept} key={dept}>{dept}</option>
+                {departments.map((dept) => (
+                  <option value={dept} key={dept}>
+                    {dept}
+                  </option>
                 ))}
               </select>
             </div>
@@ -215,6 +223,8 @@ const ManageStudents = () => {
             <h2 className="card-title">Students List</h2>
           </div>
           <div className="overflow-x-auto">
+            {filteredStudents && filteredStudents.length > 0
+              ? (
                 <table className="w-full">
                   <thead className="bg-slate-50">
                     <tr>
@@ -250,7 +260,38 @@ const ManageStudents = () => {
 
 
                             <td className="px-6 py-4 whitespace-nowrap">
-
+                                <div className="text-sm text-slate-900">
+                                  {student.department|| "-"}
+                                </div>
+                                <div className="text-sm text-slate-500">
+                                  {
+                                    student.createdAt ? new Date(student.createdAt).getFullYear():"-"
+                                  }
+                                </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                {
+                                  student.supervisor ? (
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-green-800 bg-gray-100 text-xs font-medium">{typeof student.supervisor === "object" ? student.supervisor.name || "-": student.supervisor}</span>
+                                  ): (
+                                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-red-800 bg-red-100 text-xs font-medium">{student.projectStatus === "rejected"?"Rejected":"Not Assigned supervisor"}</span>
+                                  )
+                                }
+                            </td>
+                            <td className="px-6 py-4">
+                                <div className="text-sm text-slate-900">
+                                  {student.projectTitle}
+                                </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div className="flex space-x-2">
+                                  <button onClick={()=> handleEdit(student)} className="text-blue-600 hover:text-blue-900">
+                                    Edit
+                                  </button>
+                                  <button onClick={()=> handleDelete(student)} className="text-red-600 hover:text-red-900">
+                                    Delete
+                                  </button>
+                                </div>
                             </td>
                           </tr>
                         )
@@ -258,6 +299,12 @@ const ManageStudents = () => {
                     }
                   </tbody>
                 </table>
+              )
+              : filteredStudents.length === 0 && (
+                  <div className="text-center py-8 text-slate-500">
+                    No students found matching your criteria.
+                  </div>
+                )}
           </div>
         </div>
       </div>

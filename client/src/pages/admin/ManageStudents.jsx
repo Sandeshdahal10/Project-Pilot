@@ -7,7 +7,7 @@ import {
   getAllUsers,
   updateStudent,
 } from "../../store/slices/adminSlice";
-import { CheckCircle, Plus, TriangleAlert, Users, X } from "lucide-react";
+import { AlertTriangle, CheckCircle, Plus, TriangleAlert, Users, X } from "lucide-react";
 import { toggleStudentModal } from "../../store/slices/popupSlice";
 
 const ManageStudents = () => {
@@ -398,10 +398,35 @@ const ManageStudents = () => {
                     </select>
                   </div>
                   <div className="flex justify-end space-x-3 pt-4">
-                      <button type="button" onClick={handleCloseModal} className="btn-danger">Cancel</button>
-                      <button type="submit" className="btn-primary">Update Student</button>
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="btn-danger"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn-primary">
+                      Update Student
+                    </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {showDeleteModal && studentToDelete && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
+                <div className="flex items-center mb-4">
+                  <div className="flex-shrink-0 w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-red-100">
+                    <AlertTriangle className="w-6 h-6 text-red-600"/>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-lg font-medium text-slate-900 mb-2">
+                    Delete Student
+                  </h3>
+                </div>
               </div>
             </div>
           )}

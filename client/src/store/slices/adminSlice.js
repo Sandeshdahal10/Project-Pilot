@@ -6,7 +6,7 @@ export const createStudent = createAsyncThunk("createStudent", async(data, thunk
   try {
     const res = await axiosInstance.post("/admin/create-student",data);
     toast.success(res.data.message || "Student created successfully");
-    return res.data.data.user;
+    return res.data.user;
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to create Student");
     return thunkAPI.rejectWithValue(error.response?.data?.message);
@@ -16,7 +16,7 @@ export const updateStudent = createAsyncThunk("updateStudent", async({id,data}, 
   try {
     const res = await axiosInstance.put(`/admin/update-student/${id}`,data);
     toast.success(res.data.message || "Student updated successfully");
-    return res.data.data.user;
+    return res.data.user;
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to update Student");
     return thunkAPI.rejectWithValue(error.response?.data?.message);
@@ -36,7 +36,7 @@ export const createTeacher = createAsyncThunk("createTeacher", async(data, thunk
   try {
     const res = await axiosInstance.post("/admin/create-teacher",data);
     toast.success(res.data.message || "Teacher created successfully");
-    return res.data.data.user;
+    return res.data.user;
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to create Teacher");
     return thunkAPI.rejectWithValue(error.response?.data?.message);
@@ -46,7 +46,7 @@ export const updateTeacher = createAsyncThunk("updateTeacher", async({id,data}, 
   try {
     const res = await axiosInstance.put(`/admin/update-teacher/${id}`,data);
     toast.success(res.data.message || "Teacher updated successfully");
-    return res.data.data.user;
+    return res.data.user;
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to update Teacher");
     return thunkAPI.rejectWithValue(error.response?.data?.message);

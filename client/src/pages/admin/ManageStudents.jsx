@@ -426,6 +426,15 @@ const ManageStudents = () => {
                   <h3 className="text-lg font-medium text-slate-900 mb-2">
                     Delete Student
                   </h3>
+                  <p className="text-sm text-slate-700 mb-4">Are you sure you want to delete <span>{studentToDelete.name}? This action cannot be reverted.</span></p>
+                  <div className="flex justify-center space-x-3">
+                    <button onClick={cancelDelete} className="btn-secondary">
+                      Cancel
+                    </button>
+                    <button onClick={confirmDelete} className="btn-danger">
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

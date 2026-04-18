@@ -364,7 +364,7 @@ const ManageStudents = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
-                      className="inpur-field w-full py-2 border-b border-slate-600 focus:outline-none"
+                      className="input-field w-full py-2 border-b border-slate-600 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -439,6 +439,7 @@ const ManageStudents = () => {
               </div>
             </div>
           )}
+          {isCreateStudentModalOpen && <AddStudent/>}
         </div>
       </div>
     </>

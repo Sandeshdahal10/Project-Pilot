@@ -82,8 +82,6 @@ const ManageStudents = () => {
           data: formData,
         }),
       );
-    } else {
-      dispatch(createStudent(formData));
     }
     handleCloseModal();
   };

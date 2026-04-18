@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddTeacher from "../../components/modal/AddTeacher";
-import { deleteTeacher, getAllUsers } from "../../store/slices/adminSlice";
+import { deleteTeacher, getAllUsers, updateStudent } from "../../store/slices/adminSlice";
 import { toggleTeacherModal } from "../../store/slices/popupSlice";
-import { BadgeCheck, Plus, TriangleAlert, Users, X } from "lucide-react";
+import { BadgeCheck, Plus, TriangleAlert, Users, X, AlertTriangle } from "lucide-react";
 
 const ManageTeachers = () => {
    const { users } = useSelector((state) => state.admin);
@@ -46,7 +46,7 @@ const ManageTeachers = () => {
         (teacher.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
         (teacher.email || "").toLowerCase().includes(searchTerm.toLowerCase());
       const matchesFilter =
-        filterDepartment === "all" || student.department === filterDepartment;
+        filterDepartment === "all" || teacher.department === filterDepartment;
       return matchesSearch && matchesFilter;
     });
       const handleCloseModal = () => {
@@ -69,11 +69,12 @@ const ManageTeachers = () => {
             data: formData,
           }),
         )
+      }
       handleCloseModal();
     };
   
     const handleEdit = (teacher) => {
-      setEditingStudent(teacher);
+      setEditingTeacher(teacher);
       setFormData({
         name: teacher.name,
         email: teacher.email,
@@ -469,5 +470,5 @@ const ManageTeachers = () => {
         </div>
   </>;
 };
-}
+
 export default ManageTeachers;

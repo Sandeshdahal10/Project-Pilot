@@ -149,6 +149,22 @@ const AddTeacher = () => {
                         <option value="Database Systems">Database Systems</option>
                       </select>
                     </div>
+                                      <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Max Students
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min={1}
+                      max={10}
+                      value={formData.maxStudents}
+                      onChange={(e) =>
+                        setFormData({ ...formData, maxStudents: Number(e.target.value) })
+                      }
+                      className="input-field w-full py-2 border-b border-slate-600 focus:outline-none"
+                    />
+                  </div>
                   <div className="flex justify-end space-x-3 pt-4">
                     <button
                       type="button"

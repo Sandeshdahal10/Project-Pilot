@@ -24,9 +24,6 @@ const ManageTeachers = () => {
     });
   
     const dispatch = useDispatch();
-    useEffect(() => {
-      dispatch(getAllUsers());
-    }, []);
     const teachers = useMemo(() => {
        return (users || []).filter(
         (u) => u.role?.toLowerCase() === "teacher",

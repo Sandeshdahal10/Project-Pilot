@@ -62,3 +62,12 @@ export const uploadFiles = asyncHandler(async (req, res, next) => {
         message: "Files uploaded successfully"
     });
 })
+
+export const getAvailableSupervisors = asyncHandler(async (req, res, next) => {
+    const supervisors = await User.find({role: "Teacher"}).select("name email department expertise").lean();
+    res.status(200).json({
+        success: true,
+        data: {supervisors},
+        message: "Available supervisors fetched successfully"
+    });
+})

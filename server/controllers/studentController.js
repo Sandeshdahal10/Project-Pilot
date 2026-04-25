@@ -43,3 +43,22 @@ export const submitProposal = asyncHandler(async (req, res, next) => {
         message: "Project proposal submitted successfully"
     });
 })
+
+export const uploadFiles = asyncHandler(async (req, res, next) => {
+    const {projectId} = req.params;
+    const studentId = req.user._id;
+    const project = await projectServices.getProjectById(projectId);
+
+    if(!project || project.student.toString() !== studentId.toString()){
+        return next(new Errorhandler("Project not found",403));
+    }
+    if(!req.files || req.files.length === 0){
+        return next(new Errorhandler("No files uploaded",400));
+    }
+    const updatedProject = await projectServices.addFilesToProject(projectId, req.files);
+    res.status(200).json({
+        success: true,
+        data: {project: updatedProject},
+        message: "Files uploaded successfully"
+    });
+})

@@ -45,10 +45,10 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if(authUser?.role === "Admin"){
+    if (authUser?.role === "Admin") {
       dispatch(getAllUsers());
     }
-  },[authUser])
+  }, [authUser]);
 
   const ProtectedRoute = ({ children, allowedRoles }) => {
     if (!authUser) {
@@ -97,11 +97,28 @@ const App = () => {
           }
         >
           <Route index element={<AdminDashboard />} />
-          <Route path="students" element={<ManageStudents/>}/>
-          <Route path="teachers" element={<ManageTeachers/>}/>
-          <Route path="assign-supervisor" element={<AssignSupervisor/>}/>
-          <Route path="deadlines" element={<DeadlinesPage/>}/>
-          <Route path="projects" element={<ProjectsPage/>}/>
+          <Route path="students" element={<ManageStudents />} />
+          <Route path="teachers" element={<ManageTeachers />} />
+          <Route path="assign-supervisor" element={<AssignSupervisor />} />
+          <Route path="deadlines" element={<DeadlinesPage />} />
+          <Route path="projects" element={<ProjectsPage />} />
+        </Route>
+
+        {/* Student Routes */}
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <DashboardLayout userRole={"Student"} />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<StudentDashboard />} />
+          <Route path="submit-proposal" element={<SubmitProposal />} />
+          <Route path="upload-files" element={<UploadFiles />} />
+          <Route path="supervisor" element={<SupervisorPage />} />
+          <Route path="feedback" element={<FeedbackPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
         </Route>
       </Routes>
       <ToastContainer theme="dark" />

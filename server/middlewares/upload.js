@@ -34,49 +34,98 @@ const storage = multer.diskStorage({
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 100)}`;
     const ext = path.extname(file.originalname);
     cb(null, `${file.filename}-${uniqueSuffix}${ext}`);
-  }
+  },
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes=[
-      "application/pdf",
-      "application/word",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/vnd.ms-powerpoint",
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-      "application/zip",
-      "application/x-zip-compressed",
-      "application/x-rar-compressed",
-      "application/x-rar",
-      "application/vnd.rar",
-      "application/octet-stream",
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "text/plain",
-      "application/javascript",
-      "text/css",
-      "text/html",
-      "application/json"
-    ];
+  const allowedTypes = [
+    "application/pdf",
+    "application/word",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "application/zip",
+    "application/x-zip-compressed",
+    "application/x-rar-compressed",
+    "application/x-rar",
+    "application/vnd.rar",
+    "application/octet-stream",
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "text/plain",
+    "application/javascript",
+    "text/css",
+    "text/html",
+    "application/json",
+  ];
 
-    const allowedExtension= [
-      ".pdf",
-      ".doc",
-      ".docx",
-      ".ppt",
-      ".zip",
-      ".rar",
-      ".jpg",
-      ".jpeg",
-      ".png",
-      ".gif",
-      ".txt",
-      ".js",
-      ".css",
-      ".html",
-      ".json"
-    ];
+  const allowedExtension = [
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".ppt",
+    ".zip",
+    ".rar",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".txt",
+    ".js",
+    ".css",
+    ".html",
+    ".json",
+  ];
 
-    
-}
+  const fileExt = path.extname(file.originalname).toLowerCase();
+
+  if (
+    allowedTypes.includes(file.mimetype) ||
+    allowedExtension.includes(fileExt)
+  ) {
+    cb(null, true);
+  } else {
+    cb(
+      new Error(
+        "Invalid file type. Only PDF, DOC, DOCX, PPTX, ZIP, RAR, IMAGES and CODE files are allowed",
+      ),
+      false,
+    );
+  }
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 10,
+  },
+});
+
+const handleUploadError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        success: false,
+        error: "File too large. Maximum size is 10MB.",
+      });
+    }
+    if (err.code === "LIMIT_FILE_COUNT") {
+      return res.status(400).json({
+        success: false,
+        error: "Too many Files. Maximum 10 files are allowed.",
+      });
+    }
+    if (err.message && err.message.includes("Invalid file type")) {
+      return res.status(400).json({
+        success: false,
+        error: err.message,
+      });
+    }
+  }
+  next(err);
+};
+
+export { upload, handleUploadError };

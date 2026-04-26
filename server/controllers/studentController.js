@@ -71,3 +71,20 @@ export const getAvailableSupervisors = asyncHandler(async (req, res, next) => {
         message: "Available supervisors fetched successfully"
     });
 })
+
+export const getSupervisor = asyncHandler(async (req, res, next) => {
+    const studentId = req.user._id;
+    const student = await User.findById(studentId).populate("supervisor","name email department expertise");
+
+    if(!student.supervisor){
+        return res.status(200).json({
+            success: true,
+            data: {supervisor: null},
+            message: "No supervisor assigned yet",
+        })
+    };
+    res.status(200).json({
+        success:true,
+        data: {supervisor: student.supervisor};
+    })
+})

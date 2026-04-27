@@ -51,6 +51,7 @@ export const fetchAllSupervisors = createAsyncThunk("student/fetchSupervisors", 
 export const requestSupervisor = createAsyncThunk("student/requestSupervisor", async(data, thunkAPI) => {
   try {
     const res = await axiosInstance.post("student/request-supervisor", data);
+    thunkAPI.dispatch(getSupervisor());
     return res.data.data?.request;
   } catch (error) {
     toast.error(error.response.data.message || "Failed to request supervisors");

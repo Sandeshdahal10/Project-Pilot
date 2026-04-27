@@ -10,7 +10,7 @@ import * as notificationServices from "../services/notificationServices.js";
 
 export const getStudentProject = asyncHandler(async (req, res, next) => {
     const studentId = req.user._id;
-    const project = await ProjectService.getProjectByStudent(studentId);
+    const project = await projectServices.getProjectByStudent(studentId);
 
     if(!project){
         return res.status(200).json({

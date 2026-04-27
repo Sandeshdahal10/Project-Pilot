@@ -4,6 +4,9 @@ import { Project } from "../models/project.js";
 import User from "../models/user.js";
 import * as userServices from "../services/userServices.js";
 import * as projectServices from "../services/projectServices.js";
+import * as requestServices from "../services/requestService.js";
+import * as notificationServices from "../services/notificationServices.js";
+
 
 export const getStudentProject = asyncHandler(async (req, res, next) => {
     const studentId = req.user._id;
@@ -85,6 +88,46 @@ export const getSupervisor = asyncHandler(async (req, res, next) => {
     };
     res.status(200).json({
         success:true,
-        data: {supervisor: student.supervisor};
+        data: {supervisor: student.supervisor}
+    });
+});
+
+
+export const requestSupervisor = asyncHandler(async (req, res, next) => {
+    const {teacherId, message} = req.body;
+    const studentId = req.user._id;
+
+    const student = await User.findById(studentId);
+    if(student.supervisor){
+        return next(new Errorhandler("You already have a supervisor assigned", 400))
+    }
+    const supervisor = await User.findById(teacherId);
+    if(!supervisor || supervisor.role !== "Teacher"){
+        return next (new Errorhandler("Invalid supervisor selected", 400));
+    }
+
+    if(supervisor.maxStudents === supervisor.assignedStudents.length){
+        return next (new Errorhandler("Selected supervisor has reached maximum student capacity.", 400))
+    }
+
+    const requestData = {
+        student: studentId,
+        supervisor: teacherId,
+        message,
+    };
+
+    const request = await requestServices.createRequest(requestData);
+
+    await notificationServices.notifyUser(
+        teacherId,
+        `${student.name} has request ${supervisor.name} to be their supervisor.`,
+        "request",
+        "/teacher/requests",
+        "medium"
+    );
+    res.status(201).json({
+        success: true,
+        data: {request},
+        message: "Supervisor request sent successfully"
     })
 })

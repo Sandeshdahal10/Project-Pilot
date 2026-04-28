@@ -2,6 +2,8 @@ import express from "express";
 import multer from "multer";
 import {
   getAvailableSupervisors,
+  getDashboardStats,
+  getFeedback,
   getStudentProject,
   getSupervisor,
   requestSupervisor,
@@ -54,6 +56,19 @@ studentRouter.post(
   isAuthenticated,
   isAuthorized("Student"),
   requestSupervisor,
+);
+
+studentRouter.get(
+  "/feedback/:projectId",
+  isAuthenticated,
+  isAuthorized("Student"),
+  getFeedback,
+);
+studentRouter.get(
+  "/fetch-dashboard-stats",
+  isAuthenticated,
+  isAuthorized("Student"),
+  getDashboardStats,
 );
 
 export default studentRouter;

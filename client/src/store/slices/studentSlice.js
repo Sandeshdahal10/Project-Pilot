@@ -75,6 +75,16 @@ export const uploadFiles = createAsyncThunk("student/uploadFiles", async(project
   }
 });
 
+export const fetchDashboardStats = createAsyncThunk("fetchDashboardStats", async(__, thunkAPI) => {
+  try {
+    const res = await axiosInstance.get("/student/fetch-dashboard-stats");
+    return res.data.data || res.data;
+  } catch (error) {
+    toast.error(error.response.data.message || "Failed to fetch dashboard stats");
+    return thunkAPI.rejectWithValue(error.response.data.message);
+  }
+});
+
 const studentSlice = createSlice({
   name: "student",
   initialState: {

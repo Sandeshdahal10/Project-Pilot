@@ -6,7 +6,6 @@ import {
 import { axiosInstance } from "../../lib/axios";
 import { toast } from "react-toastify";
 
-
 export const submitProjectProposal = createAsyncThunk(
   "student/submitProjectProposal",
   async (data, thunkAPI) => {
@@ -15,75 +14,117 @@ export const submitProjectProposal = createAsyncThunk(
       toast.success("Project Proposal submitted Successfully");
       return res.data.data?.project || res.data.data || res.data;
     } catch (error) {
-      toast.error(error.response.data.message || "Failed to submit project proposal");
+      toast.error(
+        error.response.data.message || "Failed to submit project proposal",
+      );
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
   },
 );
 
-export const fetchProject = createAsyncThunk("student/fetchProject", async(__, thunkAPI) => {
-  try {
-    const res = await axiosInstance.get("student/project");
-    return res.data.data?.project
-  } catch (error) {
-    toast.error(error.response.data.message || "Failed to fetch project");
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-});
-export const getSupervisor = createAsyncThunk("student/getSupervisor", async(__, thunkAPI) => {
-  try {
-    const res = await axiosInstance.get("student/supervisor");
-    return res.data.data?.supervisor;
-  } catch (error) {
-    toast.error(error.response.data.message || "Failed to fetch supervisor");
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-});
-export const fetchAllSupervisors = createAsyncThunk("student/fetchSupervisors", async(__, thunkAPI) => {
-  try {
-    const res = await axiosInstance.get("student/fetch-supervisors");
-    return res.data.data?.supervisors;
-  } catch (error) {
-    toast.error(error.response.data.message || "Failed to fetch available supervisors");
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-});
-export const requestSupervisor = createAsyncThunk("student/requestSupervisor", async(data, thunkAPI) => {
-  try {
-    const res = await axiosInstance.post("student/request-supervisor", data);
-    thunkAPI.dispatch(getSupervisor());
-    return res.data.data?.request;
-  } catch (error) {
-    toast.error(error.response.data.message || "Failed to request supervisors");
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-});
-export const uploadFiles = createAsyncThunk("student/uploadFiles", async(projectId,files, thunkAPI) => {
-  try {
-    const form = new FormData();
-    for(const file of files) form.append("files", file);
-    const res = await axiosInstance.post(`/student/upload/${projectId}`, form, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      }
-    });
-    toast.success( res.data.message ||"Files uploaded successfully");
-    return res.data.data.project || res.data;
-  } catch (error) {
-    toast.error(error.response.data.message || "Failed to upload files");
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-});
+export const fetchProject = createAsyncThunk(
+  "student/fetchProject",
+  async (__, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get("student/project");
+      return res.data.data?.project;
+    } catch (error) {
+      toast.error(error.response.data.message || "Failed to fetch project");
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
+export const getSupervisor = createAsyncThunk(
+  "student/getSupervisor",
+  async (__, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get("student/supervisor");
+      return res.data.data?.supervisor;
+    } catch (error) {
+      toast.error(error.response.data.message || "Failed to fetch supervisor");
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
+export const fetchAllSupervisors = createAsyncThunk(
+  "student/fetchSupervisors",
+  async (__, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get("student/fetch-supervisors");
+      return res.data.data?.supervisors;
+    } catch (error) {
+      toast.error(
+        error.response.data.message || "Failed to fetch available supervisors",
+      );
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
+export const requestSupervisor = createAsyncThunk(
+  "student/requestSupervisor",
+  async (data, thunkAPI) => {
+    try {
+      const res = await axiosInstance.post("student/request-supervisor", data);
+      thunkAPI.dispatch(getSupervisor());
+      return res.data.data?.request;
+    } catch (error) {
+      toast.error(
+        error.response.data.message || "Failed to request supervisors",
+      );
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
+export const uploadFiles = createAsyncThunk(
+  "student/uploadFiles",
+  async (projectId, files, thunkAPI) => {
+    try {
+      const form = new FormData();
+      for (const file of files) form.append("files", file);
+      const res = await axiosInstance.post(
+        `/student/upload/${projectId}`,
+        form,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      toast.success(res.data.message || "Files uploaded successfully");
+      return res.data.data.project || res.data;
+    } catch (error) {
+      toast.error(error.response.data.message || "Failed to upload files");
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
 
-export const fetchDashboardStats = createAsyncThunk("fetchDashboardStats", async(__, thunkAPI) => {
-  try {
-    const res = await axiosInstance.get("/student/fetch-dashboard-stats");
-    return res.data.data || res.data;
-  } catch (error) {
-    toast.error(error.response.data.message || "Failed to fetch dashboard stats");
-    return thunkAPI.rejectWithValue(error.response.data.message);
-  }
-});
+export const fetchDashboardStats = createAsyncThunk(
+  "fetchDashboardStats",
+  async (__, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get("/student/fetch-dashboard-stats");
+      return res.data.data || res.data;
+    } catch (error) {
+      toast.error(
+        error.response.data.message || "Failed to fetch dashboard stats",
+      );
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
+export const getFeedback = createAsyncThunk(
+  "getFeedback",
+  async (projectId, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get(`/student/feedback/:${projectId}`);
+      return res.data.data?.feedback || res.data.data || res.data;
+    } catch (error) {
+      toast.error(error.response.data.message || "Failed to fetch feedback.");
+      return thunkAPI.rejectWithValue(error.response.data.message);
+    }
+  },
+);
 
 const studentSlice = createSlice({
   name: "student",
@@ -99,19 +140,19 @@ const studentSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(submitProjectProposal.fulfilled,(state,action)=>{
+    builder.addCase(submitProjectProposal.fulfilled, (state, action) => {
       state.project = action.payload?.project || action.payload;
     });
-    builder.addCase(fetchProject.fulfilled,(state,action)=>{
+    builder.addCase(fetchProject.fulfilled, (state, action) => {
       state.project = action.payload?.project || action.payload || null;
     });
-    builder.addCase(getSupervisor.fulfilled,(state,action)=>{
+    builder.addCase(getSupervisor.fulfilled, (state, action) => {
       state.supervisor = action.payload?.supervisor || action.payload || null;
     });
-    builder.addCase(fetchAllSupervisors.fulfilled,(state,action)=>{
+    builder.addCase(fetchAllSupervisors.fulfilled, (state, action) => {
       state.supervisors = action.payload?.supervisors || action.payload || [];
     });
-    builder.addCase(uploadFiles.fulfilled,(state,action)=>{
+    builder.addCase(uploadFiles.fulfilled, (state, action) => {
       const newFiles = action.payload?.project?.files || action.payload || [];
       state.files = [...state.files, ...newFiles];
     });

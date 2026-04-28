@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../lib/axios";
 import { toast } from "react-toastify";
-import { act } from "react";
+
 
 export const submitProjectProposal = createAsyncThunk(
   "student/submitProjectProposal",
@@ -32,7 +32,7 @@ export const fetchProject = createAsyncThunk("student/fetchProject", async(__, t
 });
 export const getSupervisor = createAsyncThunk("student/getSupervisor", async(__, thunkAPI) => {
   try {
-    const res = await axiosInstance.get("student/supervisors");
+    const res = await axiosInstance.get("student/supervisor");
     return res.data.data?.supervisor;
   } catch (error) {
     toast.error(error.response.data.message || "Failed to fetch supervisor");
@@ -55,6 +55,22 @@ export const requestSupervisor = createAsyncThunk("student/requestSupervisor", a
     return res.data.data?.request;
   } catch (error) {
     toast.error(error.response.data.message || "Failed to request supervisors");
+    return thunkAPI.rejectWithValue(error.response.data.message);
+  }
+});
+export const uploadFiles = createAsyncThunk("student/uploadFiles", async(projectId,files, thunkAPI) => {
+  try {
+    const form = new FormData();
+    for(const file of files) form.append("files", file);
+    const res = await axiosInstance.post(`/student/upload/${projectId}`, form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    });
+    toast.success( res.data.message ||"Files uploaded successfully");
+    return res.data.data.project || res.data;
+  } catch (error) {
+    toast.error(error.response.data.message || "Failed to upload files");
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
@@ -84,6 +100,10 @@ const studentSlice = createSlice({
     });
     builder.addCase(fetchAllSupervisors.fulfilled,(state,action)=>{
       state.supervisors = action.payload?.supervisors || action.payload || [];
+    });
+    builder.addCase(uploadFiles.fulfilled,(state,action)=>{
+      const newFiles = action.payload?.project?.files || action.payload || [];
+      state.files = [...state.files, ...newFiles];
     });
   },
 });

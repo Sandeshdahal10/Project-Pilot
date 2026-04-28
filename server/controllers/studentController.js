@@ -159,25 +159,55 @@ export const getDashboardStats = asyncHandler(async (req, res, next) => {
   const upcomingDeadline = await Project.find({
     student: studentId,
     deadline: { $gte: now },
-  }).select("title description").sort({ deadline: 1 }).limit(3).lean();
+  })
+    .select("title description")
+    .sort({ deadline: 1 })
+    .limit(3)
+    .lean();
 
-    const topNotifications = await Notification.find({ user: studentId })
+  const topNotifications = await Notification.find({ user: studentId })
     .populate("user", "name")
     .sort({ createdAt: -1 })
     .limit(3)
     .lean();
-    const feedbackNotifications =  project?.feedback &&  project?.feedback.length > 0 ? project.feedback.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0,2) : [];
+  const feedbackNotifications =
+    project?.feedback && project?.feedback.length > 0
+      ? project.feedback
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 2)
+      : [];
 
-    const supervisorName = project?.supervisor?.name || null;
-    res.status(200).json({
-        success: true,
-        message: "Dashboard stats fetched successfully",
-        data: {
-            project,
-            upcomingDeadline,
-            topNotifications,
-            supervisorName,
-        }
-    })
+  const supervisorName = project?.supervisor?.name || null;
+  res.status(200).json({
+    success: true,
+    message: "Dashboard stats fetched successfully",
+    data: {
+      project,
+      upcomingDeadline,
+      topNotifications,
+      supervisorName,
+    },
+  });
+});
 
+export const getFeedback = asyncHandler(async (req, res, next) => {
+  const { projectId } = req.params;
+  const studentId = req.user._id;
+
+  const project = await projectServices.getProjectById(projectId);
+
+  if (!project || project.student.toString() !== studentId.toString()) {
+    return next(
+      new Errorhandler("Not authorized to view feedback for this project", 403),
+    );
+  }
+
+  const sortedFeedback = project.feedback.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+  );
+  res.status(200).json({
+    success: true,
+    data: { feedback: sortedFeedback },
+    message: "Feedback fetched successfully",
+  });
 });

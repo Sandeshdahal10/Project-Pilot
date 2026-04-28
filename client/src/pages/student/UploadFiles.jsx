@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { fetchProject, uploadFiles } from "../../store/slices/studentSlice";
-import { Archive, File, FileText, Icon,FileCode } from "lucide-react";
+import { Archive, File, FileText, Icon,FileCode, FilePlus } from "lucide-react";
 
 const UploadFiles = () => {
   const dispatch = useDispatch();
@@ -143,6 +143,42 @@ const UploadFiles = () => {
         </div>
       )
     }
+    {/* UPLOADED FILES LIST */}
+    <div className="card">
+      <div className="card-header">
+        <h2 className="card-title">Uploaded Files</h2>
+        <p className="card-subtitle">Manage your Uploaded project files</p>
+      </div>
+      {
+        (files || []).length === 0 ? (
+          <div className="text-center py-4">
+              <FilePlus className="w-16 h-16 text-slate-300 mx-auto mb-4"/>
+              <p className="text-slate-500">No files uploaded yet!</p>
+          </div>
+        ): (
+          <div className="space-y-3">
+            {files.map(file=> {
+              <div key={file._id || file.fileUrl} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                <div className="flex items-center space-x-4">
+                  {getFileIcon(file.originalName)}
+                  <div>
+                    <p className="font-medium text-slate-800">{file.originalName}</p>
+                    <div className="flex items-center space-x-4 text-sm text-slate-600">
+                      <span>{file.fileType || "File"}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button className="btn-outline btn-small">
+                    Download
+                  </button>
+                </div>
+              </div>
+            })}
+          </div>
+        )
+      }
+    </div>
   </div>
   
   
